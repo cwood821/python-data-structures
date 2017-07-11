@@ -6,3 +6,4 @@ This repository holds implementations of common data structures in Python (3.4).
 
 - Stack
 - Queue
+- Linked List (Singly-linked)

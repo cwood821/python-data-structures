@@ -1,4 +1,4 @@
-# This pair of classes implements a simple, singly Linked List data structure
+# This pair of classes implement a simple, singly Linked List data structure
 # More on Linked Lists here: https://en.wikipedia.org/wiki/Linked_list
 
 
@@ -12,15 +12,15 @@ class Node:
 
 class LinkedList:
 
-    def __init__(self, firstNode):
+    def __init__(self, firstNode = Node(None, None)):
         self.firstNode = firstNode
 
 
-    def search(self, searchNode):
+    def search(self, searchData):
         curNode = self.firstNode
         # Find the beforeNode node
         while(curNode.next != None):
-            if (curNode.data == searchNode.data):
+            if (curNode.data == searchData):
                 return curNode
             curNode = curNode.next
         # Reached the end, return false
@@ -28,12 +28,11 @@ class LinkedList:
 
     def size(self):
         curNode = self.firstNode
+        # If ther first node is null, return 0
+        if(curNode.data == None):
+            return 0
 
-        # If ther first node is not null, default size to 1
-        if(curNode.data != None):
-            counter = 1
-        else:
-            counter = 0
+        counter = 1
 
         while(curNode.next != None):
             curNode = curNode.next
@@ -42,72 +41,85 @@ class LinkedList:
         return counter
 
     # Insert a node to the end of the list
-    def insert(self, newNode):
+    def insert(self, newData):
         # Get the root node
         curNode = self.firstNode;
 
+        # If the first node is None, insert it there
+        if (curNode.data == None):
+            curNode.data = newData
+            return
+
+        # Iterate to the end of the list
         while(curNode.next != None):
             curNode = curNode.next
 
         # The next node is None, so add the new Node here
-        curNode.next = newNode
+        curNode.next = Node(newData, None)
 
     # Insert a node after a given node
-    def insertAfter(self, afterNode, newNode):
+    def insertAfter(self, afterData, newData):
         # Get the root node
         curNode = self.firstNode;
 
         # Find the given node
-        while(curNode.data != afterNode.data):
+        while(curNode.data != afterData):
+            # If the next node is the last one, just add it t
+            # Question: What's the expected behaviour for insertAfter at the
+            # end of a list when you haven't found the search data?
+            if (curNode.next == None):
+                curNode.next = Node(newData, None)
+                return False
+
             curNode = curNode.next
 
-        # Either the node was the last one, or no matching
-        # node was found, so just add it to the end
-        if (curNode.next == None):
-            curNode.next = newNode
-            return curNode.next
-
         # Otherwise, insert the newNode between the curNode and curNode.nextNode
+        newNode = Node(newData, None)
         newNode.next = curNode.next
         curNode.next = newNode
 
+        return newNode
+
     # Insert a node before a given node
-    def insertBefore(self, beforeNode, newNode):
+    def insertBefore(self, beforeData, newData):
         # Get the root node
         curNode = self.firstNode;
 
         # If the beforeNode is the first, swap them
-        if (curNode.data == beforeNode.data):
-            newNode.next = curNode
+        if (curNode.data == beforeData):
+            newNode = Node(newData, curNode)
             self.firstNode = newNode
 
         # Find the beforeNode node
-        while(curNode.next.data != None and curNode.next.data != beforeNode.data):
+        while(curNode.next.data != None and curNode.next.data != beforeData):
             curNode = curNode.next
 
         # Insert the newNode before the curNode
-        newNode.next = curNode.next
+        newNode = Node(newData, curNode.next)
+        # newNode.next = curNode.next
         curNode.next = newNode
 
     # Remove the given node from the list
-    def remove(self, deleteNode):
+    def remove(self, deleteData):
         curNode = self.firstNode
 
         # If the node to delete is the first
-        if (curNode.data == deleteNode.data):
+        if (curNode.data == deleteData):
             self.firstNode = curNode.next
             return
 
         # Iterate through the nodes
-        while (curNode.next != None and curNode.next.data != deleteNode.data):
+        while (curNode.next != None and curNode.next.data != deleteData):
             curNode = curNode.next
 
         # Reached the end, the given node doesn't exist
         if (curNode.next == None):
             return False
 
-        # Otherwise, set next to skip over the deleteNode
+        # Otherwise, found it. Set next to skip over the deleteData node
         curNode.next = curNode.next.next
+
+        return True
 
     def printList(self):
         curNode = self.firstNode;
